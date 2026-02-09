@@ -1,7 +1,8 @@
+
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
-
+console.log("Connecting to:", process.env.MONGO_URI);
 const dbURI = process.env.MONGO_URI;
 mongoose.connect(dbURI)
     .then(() => console.log('מחובר בהצלחה למסד הנתונים בענן! ☁️'))
@@ -53,7 +54,16 @@ async function seedDatabase() {
         console.error('שגיאה בתהליך האתחול:', err);
     }
 }
-
+mongoose.connection.once('open', async () => {
+    const campaigns = await Campaign.countDocuments();
+    const groups = await Group.countDocuments();
+    const donations = await Donation.countDocuments();
+    
+    console.log("--- דוח מצב מסד נתונים ---");
+    console.log(`קמפיינים: ${campaigns}`);
+    console.log(`קבוצות: ${groups}`);
+    console.log(`תרומות: ${donations}`);
+    console.log("--------------------------");
+});
 mongoose.connection.once('open', seedDatabase);
-
 module.exports = { Campaign, Group, Donation };

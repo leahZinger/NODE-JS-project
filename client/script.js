@@ -3,7 +3,6 @@ let allGroups = [];
 let isSocialProofRunning = false;
 let countdownStarted = false;
 
-// 1. אתחול
 async function init() {
     await fetchCampaignInfo();
     await fetchGroups();
@@ -24,20 +23,17 @@ async function fetchCampaignInfo() {
             document.getElementById('raised-text').innerText = `₪${data.totalRaised.toLocaleString()} גויסו`;
             document.getElementById('multiplier').innerText = `x${data.multiplier || 1}`;
             
-            // עדכון מספר התורמים שמגיע עכשיו מהשרת
             document.getElementById('donors-count').innerText = data.donorCount || 0;
 
             const percent = Math.min((data.totalRaised / data.goal) * 100, 100);
             document.getElementById('progress-bar').style.width = `${percent}%`;
 
-            // הפעלת השעון אם קיים תאריך סיום
             if (data.endDate) {
                 startCountdown(data.endDate);
             }
         }
     } catch (e) { console.error("Error info:", e); }
 }
-// 3. הצגת נבחרות
 async function fetchGroups() {
     try {
         const res = await fetch(`${API_URL}/groups`);
@@ -73,7 +69,6 @@ async function fetchGroups() {
     } catch (e) { console.error("Error groups:", e); }
 }
 
-// 4. רשימת תורמים ומחיקה - כאן כפתור המחיקה נבנה!
 async function showAllDonors() {
     try {
         const res = await fetch(`${API_URL}/donors`);
@@ -120,7 +115,6 @@ async function deleteDonationUI(id) {
     if (res.ok) await forceRefresh();
 }
 
-// 5. רענון וניהול מודאלים
 async function forceRefresh() {
     await fetchCampaignInfo();
     await fetchGroups();
@@ -132,7 +126,6 @@ function openModal() { document.getElementById('donation-modal').classList.repla
 function closeModal() { document.getElementById('donation-modal').classList.replace('flex', 'hidden'); }
 function closeDonorsModal() { document.getElementById('donors-list-modal').classList.replace('flex', 'hidden'); }
 
-// 6. הוספת תרומה
 document.getElementById('donation-form').onsubmit = async (e) => {
     e.preventDefault();
     const data = {
@@ -152,7 +145,6 @@ document.getElementById('donation-form').onsubmit = async (e) => {
     }
 };
 
-// 7. עדכון יעד וסיסמה
 function promptAdminPassword() {
     const pass = prompt("סיסמת מנהל:");
     if (pass === "123456") {
@@ -170,7 +162,6 @@ async function updateGoal(newGoal) {
     await forceRefresh();
 }
 
-// 8. התראות (Social Proof)
 function startSocialProof() {
     setInterval(async () => {
         try {
@@ -192,7 +183,7 @@ function showNotification(text) {
     setTimeout(() => { n.remove(); }, 6000);
 }
 function startCountdown(endDateStr) {
-    if (countdownStarted) return; // מונע כפל שעונים
+    if (countdownStarted) return; 
     countdownStarted = true;
 
     function updateClock() {
@@ -211,7 +202,6 @@ function startCountdown(endDateStr) {
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-        // עדכון כל תיבה בנפרד עם פונקציית padStart שמוסיפה 0 אם המספר קטן מ-10
         document.getElementById('timer-days').innerText = String(d).padStart(2, '0');
         document.getElementById('timer-hours').innerText = String(h).padStart(2, '0');
         document.getElementById('timer-minutes').innerText = String(m).padStart(2, '0');

@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-// הנתיב לקובץ ה-JSON שלך
 const dbPath = path.resolve(__dirname, '..', 'DAL', 'models', 'matchingData.json');
 
 const readDB = () => {
@@ -31,7 +30,6 @@ const getAllGroup = () => readDB().groups || [];
 const getCampaignStatus = () => {
     const db = readDB();
     const status = { ...db.campaign };
-    // מעדכן את מספר התורמים בזמן אמת לפי אורך המערך
     status.donorCount = db.donors ? db.donors.length : 0; 
     return status;
 };

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const router = require('./routing/Router');
@@ -15,7 +16,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/campaign', router);
-
 
 app.use((req, res) => {
     res.status(404).json({ error: "הנתיב המבוקש לא נמצא" });
